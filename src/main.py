@@ -4,6 +4,7 @@ from loguru import logger
 
 from distributives.distributive import Distributive
 from distributives.distributive_searcher import DistributiveSearcher
+from saver.saver import Saver
 
 
 def read_name_surname() -> str:
@@ -21,10 +22,10 @@ def read_distributives() -> list[str]:
     return distrs
 
 def main():
-    excel_file = pd.ExcelFile("base.xlsx")
-    searcher = DistributiveSearcher(excel_file)
-
+    excel_file_name = "base.xlsx"
     while True:
+        excel_file = pd.ExcelFile(excel_file_name)
+        searcher = DistributiveSearcher(excel_file)
         print("\n" + "-"*15 + "\n")
         distrs = read_distributives()
         name_surname = read_name_surname()
@@ -45,9 +46,12 @@ def main():
             dop_distrs.append(dop_distr)
 
         main_distr.user_name = name_surname
+        saver = Saver(excel_file)
+        saver.save_to_excel_file(excel_file_name, main_distr, dop_distrs)
 
         print(f"ФИО: {name_surname}")
         print(main_distr.number, *[x.number for x in dop_distrs], sep='; ')
+        print("Файл успешно обновлен!")
 
 
 if __name__ == "__main__":

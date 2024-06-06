@@ -22,7 +22,10 @@ class DistributiveSearcher:
         df = pd.read_excel(self.excel_file, sheet_name=distr_name)
 
         oldest_date = df[MainDistrColumns.DATE_COLUMN_NAME].min()
-
+        if pd.isnull(oldest_date):
+            logger.warning(f"Ни одна дата не была найдена в листе {distr_name}!")
+            return self.get_main_distributive_from_mz(distr_name)
+        
         current_time = datetime.now()
         
         if (current_time - oldest_date) < timedelta(hours=96):
@@ -43,6 +46,8 @@ class DistributiveSearcher:
             distr_rows = whole_dataframe[whole_dataframe[mz_column] == distr_name]
             
             oldest_date = distr_rows[MzColumns.DATE_COLUMN_NAME].min()
+            if pd.isnull(oldest_date):
+                continue
             current_time = datetime.now()
             if (current_time - oldest_date) < timedelta(hours=96):
                 continue
@@ -61,6 +66,8 @@ class DistributiveSearcher:
         distr_dataframe = whole_dataframe[[distr_name, date_column_name]]
 
         oldest_date = distr_dataframe[date_column_name].min()
+        if pd.isnull(oldest_date):
+            return None
         current_time = datetime.now()
         if (current_time - oldest_date) < timedelta(hours=96):
             return None
