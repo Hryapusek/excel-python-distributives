@@ -55,5 +55,15 @@ class DistributiveSearcher:
         if distr_name not in whole_dataframe.columns:
             logger.warning(f"Дистрибутив с именем \"{distr_name}\" не найден в дополнительных дистрибутивах!")
             return None
-        distr_column_index = whole_dataframe.columns.names.index(distr_name)
+        distr_column_index = whole_dataframe.columns.values.tolist().index(distr_name)
         date_column_index = distr_column_index + 1
+        date_column_name: str = whole_dataframe.columns.values.tolist()[date_column_index]
+        distr_dataframe = whole_dataframe[[distr_name, date_column_name]]
+
+        oldest_date = distr_dataframe[date_column_name].min()
+        current_time = datetime.now()
+        if (current_time - oldest_date) < timedelta(hours=96):
+            return None
+        suitable_rows = distr_dataframe[distr_dataframe[date_column_name] == oldest_date]
+        row = suitable_rows.iloc[0]
+        return Distributive(row[distr_name], row[date_column_name], Sheets.DOP_NAME)
