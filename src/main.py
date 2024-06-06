@@ -1,69 +1,54 @@
+
 import pandas as pd
-from datetime import datetime, timedelta
+from loguru import logger
 
-urer_input = input('Введите названия дистрибутивов через пробел: ')
-distr = urer_input.upper().split()
-
-distr_numbers = []
-distr_name = []
-
-# Загрузка Excel файла
-workbook = 'base.xlsx'
-
-# Считать все листы в словарь
-# sheets_dict = pd.read_excel(workbook, sheet_name=None)
-xz = pd.read_excel(workbook)
-
-# Назначить каждый лист в отдельную переменную
-#sheet_SKBO = sheets_dict['СКБО']
-#sheet_SKUO = sheets_dict['СКУО']
-#sheet_SKJO = sheets_dict['СКЮО']
-#sheet_SBOO = sheets_dict['СБОО']
-#sheet_MZ = sheets_dict['МЗ']
-#sheet_DOP = sheets_dict['Доп']
+from distributives.distributive import Distributive
+from distributives.distributive_searcher import DistributiveSearcher
 
 
+def read_name_surname() -> str:
+    name = input("Введите ФИО пользователя: ").strip()
+    return name
 
-def check_oldest_date(file_path, sheet_name, column_name):
-    """
-    Функция проверяет самую старую дату в указанном столбце Excel файла и возвращает True, если эта дата старше 96 часов от текущего времени.
+def read_distributives() -> list[str]:
+    while True:
+        distrs = input("Введите дистрибутивы: ").strip().split()
+        if not distrs:
+            print("Вы не ввели ни одного дистрибутива. Попробуйте снова")
+            continue
+        break
+    distrs = [x.upper() for x in distrs]
+    return distrs
 
-    Параметры:
-    file_path (str): Путь к Excel файлу.
-    sheet_name (str): Название листа в Excel файле.
-    column_name (str): Название столбца, в котором необходимо проверить даты.
+def main():
+    excel_file = pd.ExcelFile("base.xlsx")
+    searcher = DistributiveSearcher(excel_file)
 
-    Возвращает:
-    tuple: Если найдена дата старше 96 часов, возвращает кортеж (столбец, строка, True), в противном случае (None, None, False).
-    """
-    # Загрузка Excel файла в Pandas DataFrame
-    df = pd.read_excel(file_path, sheet_name=sheet_name)
+    while True:
+        print("\n" + "-"*15 + "\n")
+        distrs = read_distributives()
+        name_surname = read_name_surname()
+        main_distr_str = distrs[0]
+        dop_distrs_str = distrs[1:]
+        print("Начинаю искать дистрибутивы в таблице")
+        main_distr = searcher.get_main_distributive(main_distr_str)
+        if not main_distr:
+            logger.warning(f"Основной дистрибутив с именем \"{main_distr_str}\" не найден")
+            continue
+        logger.info(f"Нашел главный дистрибутив {main_distr.number} в листе {main_distr.sheet_name}")
+        dop_distrs: list[Distributive] = []
+        for dop_distr_str in dop_distrs_str:
+            dop_distr = searcher.get_dop_distributive(dop_distr_str)
+            if not dop_distr:
+                logger.warning(f"Дополнительный дистрибутив с именем \"{dop_distr_str}\" не найден")
+                continue
+            dop_distrs.append(dop_distr)
 
-    # Находим самую старую дату в заданном столбце
-    oldest_date = df[column_name].min()
+        main_distr.user_name = name_surname
 
-    # Проверяем, является ли эта дата старше 96 часов от текущего времени
-    current_time = datetime.now()
-    if (current_time - oldest_date) >= timedelta(hours=96):
-        # Определение столбца и строки для старой даты
-        column = column_name
-        row = df[df[column_name] == oldest_date].index[0]
-        return (column, row, True)
-    else:
-        return (None, None, False)
+        print(f"ФИО: {name_surname}")
+        print(main_distr.number, *[x.number for x in dop_distrs], sep='; ')
 
 
-x = check_oldest_date("base.xlsx", distr[0], "Дата")
-
-print(x[1])
-
-distr_numbers.append(x[1])
-distr_numbers.append(x[1])
-distr_numbers.append(x[1])
-
-value = xz.at[x[1], "Дистр"]
-
-print(value)
-
-print(distr[0])
-print(distr_numbers)
+if __name__ == "__main__":
+    main()

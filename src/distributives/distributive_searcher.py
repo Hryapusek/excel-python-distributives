@@ -31,7 +31,7 @@ class DistributiveSearcher:
         suitable_rows = df[df[MainDistrColumns.DATE_COLUMN_NAME] == oldest_date]
         row = suitable_rows.iloc[0]
 
-        return Distributive(row[MainDistrColumns.NUMBER_COLUMN_NAME], row[MainDistrColumns.DATE_COLUMN_NAME], distr_name)
+        return Distributive(row[MainDistrColumns.NUMBER_COLUMN_NAME], row[MainDistrColumns.DATE_COLUMN_NAME], distr_name, distr_name)
 
     def get_main_distributive_from_mz(self, distr_name: str) -> Optional[Distributive]:
         """
@@ -46,9 +46,9 @@ class DistributiveSearcher:
             current_time = datetime.now()
             if (current_time - oldest_date) < timedelta(hours=96):
                 continue
-            suitable_rows = distr_rows[whole_dataframe[MzColumns.DATE_COLUMN_NAME] == oldest_date]
+            suitable_rows = distr_rows[distr_rows[MzColumns.DATE_COLUMN_NAME] == oldest_date]
             row = suitable_rows.iloc[0]
-            return Distributive(row[MzColumns.NUMBER_COLUMN_NAME], row[MzColumns.DATE_COLUMN_NAME], Sheets.MZ_NAME)
+            return Distributive(round(row[MzColumns.NUMBER_COLUMN_NAME]), row[MzColumns.DATE_COLUMN_NAME], Sheets.MZ_NAME, distr_name)
 
     def get_dop_distributive(self, distr_name: str) -> Optional[Distributive]:
         whole_dataframe = pd.read_excel(self.excel_file, sheet_name=Sheets.DOP_NAME)
@@ -66,4 +66,4 @@ class DistributiveSearcher:
             return None
         suitable_rows = distr_dataframe[distr_dataframe[date_column_name] == oldest_date]
         row = suitable_rows.iloc[0]
-        return Distributive(row[distr_name], row[date_column_name], Sheets.DOP_NAME)
+        return Distributive(round(row[distr_name]), row[date_column_name], Sheets.DOP_NAME, distr_name)

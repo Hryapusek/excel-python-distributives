@@ -5,6 +5,9 @@ class Sheets:
 class MzColumns:
     NUMBER_COLUMN_NAME = "Дистр"
     DATE_COLUMN_NAME = "Дата"
+    COMPLECT_COLUMN_NAME = "Комплект"
+    DOPS_COLUMN_NAME = "Допы"
+    USER_COLUMN_NAME = "Кому"
 
     MZ_1 = "МЗ_1"
     MZ_2 = "МЗ_2"
@@ -13,4 +16,7 @@ class MzColumns:
 
 class MainDistrColumns:
     DATE_COLUMN_NAME = "Дата"
+    COMPLECT_COLUMN_NAME = "Комплект"
+    DOPS_COLUMN_NAME = "Допы"
+    USER_COLUMN_NAME = "Кому"
     NUMBER_COLUMN_NAME = "Дистр"
