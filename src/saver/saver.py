@@ -30,13 +30,14 @@ class Saver:
                     df.to_excel(writter, sheet_name=sheet, index=False)
             # TODO: process Sheets.MZ_NAME, Sheets.DOP_NAME
             mz_dataframe = dfs[sheet_names.index(Sheets.MZ_NAME)]
-            self.__write_mz_sheet(mz_dataframe, writter, main_distr, dop_distrs)
+            if main_distr.name not in sheet_names:
+                self.__write_mz_sheet(mz_dataframe, writter, main_distr, dop_distrs)
             dop_dataframe = dfs[sheet_names.index(Sheets.DOP_NAME)]
             self.__write_dops_sheet(dop_dataframe, writter, dop_distrs)
 
     def __write_main_distr(self, df: DataFrame, writter: ExcelWriter, main_distr: Distributive, dop_distrs: list[Distributive]):
         row_index = df[df[MainDistrColumns.NUMBER_COLUMN_NAME] == main_distr.number].index[0]
-        df.loc[row_index, MainDistrColumns.COMPLECT_COLUMN_NAME] = "; ".join([str(main_distr.number), *[x.number for x in dop_distrs]])
+        df.loc[row_index, MainDistrColumns.COMPLECT_COLUMN_NAME] = "; ".join([str(main_distr.number), *[str(x.number) for x in dop_distrs]])
         df.loc[row_index, MainDistrColumns.DOPS_COLUMN_NAME] = ", ".join([x.name for x in dop_distrs])
         df.loc[row_index, MainDistrColumns.USER_COLUMN_NAME] = main_distr.user_name
         df.loc[row_index, MainDistrColumns.DATE_COLUMN_NAME] = datetime.now()

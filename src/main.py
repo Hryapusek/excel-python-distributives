@@ -50,7 +50,7 @@ def main():
         saver.save_to_excel_file(excel_file_name, main_distr, dop_distrs)
 
         print(f"ФИО: {name_surname}")
-        print(main_distr.number, *[x.number for x in dop_distrs], sep='; ')
+        print(main_distr.number, *[str(x.number) for x in dop_distrs], sep='; ')
         print("Файл успешно обновлен!")
 
 
