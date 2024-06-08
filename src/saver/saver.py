@@ -39,9 +39,9 @@ class Saver:
         row_index = df[df[MainDistrColumns.NUMBER_COLUMN_NAME] == main_distr.number].index[0]
 
         # Remove "Value 'asdasd' has dtype incompatible with float64" warnings
-        df.loc[:, MainDistrColumns.COMPLECT_COLUMN_NAME].astype(str)
-        df.loc[:, MainDistrColumns.DOPS_COLUMN_NAME].astype(str)
-        df.loc[:, MainDistrColumns.USER_COLUMN_NAME].astype(str)
+        df.loc[:, MainDistrColumns.COMPLECT_COLUMN_NAME] = df.loc[:, MainDistrColumns.COMPLECT_COLUMN_NAME].astype(str)
+        df.loc[:, MainDistrColumns.DOPS_COLUMN_NAME] = df.loc[:, MainDistrColumns.DOPS_COLUMN_NAME].astype(str)
+        df.loc[:, MainDistrColumns.USER_COLUMN_NAME] = df.loc[:, MainDistrColumns.USER_COLUMN_NAME].astype(str)
 
         df.loc[row_index, MainDistrColumns.COMPLECT_COLUMN_NAME] = "; ".join([str(main_distr.number), *[str(x.number) for x in dop_distrs]])
         df.loc[row_index, MainDistrColumns.DOPS_COLUMN_NAME] = ", ".join([str(x.name) for x in dop_distrs])
@@ -56,9 +56,9 @@ class Saver:
         row_index = df[df[MzColumns.NUMBER_COLUMN_NAME] == main_distr.number].index[0]
 
         # Remove "Value 'asdasd' has dtype incompatible with float64" warnings
-        df.loc[:, MzColumns.COMPLECT_COLUMN_NAME].astype(str)
-        df.loc[:, MzColumns.DOPS_COLUMN_NAME].astype(str)
-        df.loc[:, MzColumns.USER_COLUMN_NAME].astype(str)
+        df.loc[:, MzColumns.COMPLECT_COLUMN_NAME] = df.loc[:, MzColumns.COMPLECT_COLUMN_NAME].astype(str)
+        df.loc[:, MzColumns.DOPS_COLUMN_NAME] = df.loc[:, MzColumns.DOPS_COLUMN_NAME].astype(str)
+        df.loc[:, MzColumns.USER_COLUMN_NAME] = df.loc[:, MzColumns.USER_COLUMN_NAME].astype(str)
 
         df.loc[row_index, MzColumns.COMPLECT_COLUMN_NAME] = "; ".join([str(main_distr.number), *[str(x.number) for x in dop_distrs]])
         df.loc[row_index, MzColumns.DOPS_COLUMN_NAME] = ", ".join([str(x.name) for x in dop_distrs])
