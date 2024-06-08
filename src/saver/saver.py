@@ -44,7 +44,7 @@ class Saver:
         df.loc[:, MainDistrColumns.USER_COLUMN_NAME].astype(str)
 
         df.loc[row_index, MainDistrColumns.COMPLECT_COLUMN_NAME] = "; ".join([str(main_distr.number), *[str(x.number) for x in dop_distrs]])
-        df.loc[row_index, MainDistrColumns.DOPS_COLUMN_NAME] = ", ".join([x.name for x in dop_distrs])
+        df.loc[row_index, MainDistrColumns.DOPS_COLUMN_NAME] = ", ".join([str(x.name) for x in dop_distrs])
         df.loc[row_index, MainDistrColumns.USER_COLUMN_NAME] = main_distr.user_name
         df.loc[row_index, MainDistrColumns.DATE_COLUMN_NAME] = datetime.now()
         df.to_excel(writter, sheet_name=main_distr.name, index=False)
@@ -61,7 +61,7 @@ class Saver:
         df.loc[:, MzColumns.USER_COLUMN_NAME].astype(str)
 
         df.loc[row_index, MzColumns.COMPLECT_COLUMN_NAME] = "; ".join([str(main_distr.number), *[str(x.number) for x in dop_distrs]])
-        df.loc[row_index, MzColumns.DOPS_COLUMN_NAME] = ", ".join([x.name for x in dop_distrs])
+        df.loc[row_index, MzColumns.DOPS_COLUMN_NAME] = ", ".join([str(x.name) for x in dop_distrs])
         df.loc[row_index, MzColumns.USER_COLUMN_NAME] = main_distr.user_name
         df.loc[row_index, MzColumns.DATE_COLUMN_NAME] = datetime.now()
         df.to_excel(writter, sheet_name=Sheets.MZ_NAME, index=False)
