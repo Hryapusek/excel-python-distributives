@@ -11,6 +11,7 @@ from names.names import *
 class Saver:
     def __init__(self, source_excel_file: ExcelFile) -> None:
         self.source_excel_file = source_excel_file
+        self.sheet_names = self.source_excel_file.sheet_names
 
     def save_to_excel_file(self, output_file: str, main_distr: Distributive, dop_distrs: list[Distributive]):
         sheet_names = self.source_excel_file.sheet_names
@@ -30,8 +31,7 @@ class Saver:
                     df.to_excel(writter, sheet_name=sheet, index=False)
             # TODO: process Sheets.MZ_NAME, Sheets.DOP_NAME
             mz_dataframe = dfs[sheet_names.index(Sheets.MZ_NAME)]
-            if main_distr.name not in sheet_names:
-                self.__write_mz_sheet(mz_dataframe, writter, main_distr, dop_distrs)
+            self.__write_mz_sheet(mz_dataframe, writter, main_distr, dop_distrs)
             dop_dataframe = dfs[sheet_names.index(Sheets.DOP_NAME)]
             self.__write_dops_sheet(dop_dataframe, writter, dop_distrs)
 
@@ -44,6 +44,9 @@ class Saver:
         df.to_excel(writter, sheet_name=main_distr.name, index=False)
 
     def __write_mz_sheet(self, df: DataFrame, writter: ExcelWriter, main_distr: Distributive, dop_distrs: list[Distributive]):
+        if main_distr.name in self.sheet_names:
+            df.to_excel(writter, sheet_name=Sheets.MZ_NAME, index=False)
+            return
         row_index = df[df[MzColumns.NUMBER_COLUMN_NAME] == main_distr.number].index[0]
         df.loc[:, MzColumns.COMPLECT_COLUMN_NAME].astype('string')
         df.loc[row_index, MzColumns.COMPLECT_COLUMN_NAME] = "; ".join([str(main_distr.number), *[str(x.number) for x in dop_distrs]])
