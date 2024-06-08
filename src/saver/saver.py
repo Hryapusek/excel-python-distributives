@@ -37,6 +37,12 @@ class Saver:
 
     def __write_main_distr(self, df: DataFrame, writter: ExcelWriter, main_distr: Distributive, dop_distrs: list[Distributive]):
         row_index = df[df[MainDistrColumns.NUMBER_COLUMN_NAME] == main_distr.number].index[0]
+
+        # Remove "Value 'asdasd' has dtype incompatible with float64" warnings
+        df.loc[:, MainDistrColumns.COMPLECT_COLUMN_NAME].astype(str)
+        df.loc[:, MainDistrColumns.DOPS_COLUMN_NAME].astype(str)
+        df.loc[:, MainDistrColumns.USER_COLUMN_NAME].astype(str)
+
         df.loc[row_index, MainDistrColumns.COMPLECT_COLUMN_NAME] = "; ".join([str(main_distr.number), *[str(x.number) for x in dop_distrs]])
         df.loc[row_index, MainDistrColumns.DOPS_COLUMN_NAME] = ", ".join([x.name for x in dop_distrs])
         df.loc[row_index, MainDistrColumns.USER_COLUMN_NAME] = main_distr.user_name
@@ -48,7 +54,12 @@ class Saver:
             df.to_excel(writter, sheet_name=Sheets.MZ_NAME, index=False)
             return
         row_index = df[df[MzColumns.NUMBER_COLUMN_NAME] == main_distr.number].index[0]
-        df.loc[:, MzColumns.COMPLECT_COLUMN_NAME].astype('string')
+
+        # Remove "Value 'asdasd' has dtype incompatible with float64" warnings
+        df.loc[:, MzColumns.COMPLECT_COLUMN_NAME].astype(str)
+        df.loc[:, MzColumns.DOPS_COLUMN_NAME].astype(str)
+        df.loc[:, MzColumns.USER_COLUMN_NAME].astype(str)
+
         df.loc[row_index, MzColumns.COMPLECT_COLUMN_NAME] = "; ".join([str(main_distr.number), *[str(x.number) for x in dop_distrs]])
         df.loc[row_index, MzColumns.DOPS_COLUMN_NAME] = ", ".join([x.name for x in dop_distrs])
         df.loc[row_index, MzColumns.USER_COLUMN_NAME] = main_distr.user_name
