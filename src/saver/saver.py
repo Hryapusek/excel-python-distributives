@@ -22,10 +22,10 @@ class Saver:
         
         with ExcelWriter(output_file) as writter:
             for i, sheet in enumerate(sheet_names):
-                if sheet == main_distr.name:
-                    self.__write_main_distr(dfs[i], writter, main_distr, dop_distrs)
-                elif sheet in [Sheets.MZ_NAME, Sheets.DOP_NAME]:
+                if sheet in [Sheets.MZ_NAME, Sheets.DOP_NAME]:
                     continue
+                elif sheet == main_distr.sheet_name:
+                    self.__write_main_distr(dfs[i], writter, main_distr, dop_distrs)
                 else:
                     df = dfs[i]
                     df.to_excel(writter, sheet_name=sheet, index=False)
@@ -50,7 +50,7 @@ class Saver:
         df.to_excel(writter, sheet_name=main_distr.name, index=False)
 
     def __write_mz_sheet(self, df: DataFrame, writter: ExcelWriter, main_distr: Distributive, dop_distrs: list[Distributive]):
-        if main_distr.name in self.sheet_names:
+        if main_distr.sheet_name != Sheets.MZ_NAME:
             df.to_excel(writter, sheet_name=Sheets.MZ_NAME, index=False)
             return
         row_index = df[df[MzColumns.NUMBER_COLUMN_NAME] == main_distr.number].index[0]
